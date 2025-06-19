@@ -1,9 +1,8 @@
 import os
-from dotenv import load_dotenv
+from src.config import GIMINI_API_KEY
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.prompts import PromptTemplate
-load_dotenv()
-os.environ["GOOGLE_API_KEY"] = os.getenv("GIMINI_API_KEY")
+os.environ["GOOGLE_API_KEY"] = GIMINI_API_KEY
 llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash", temperature=0.7)
 prompt = PromptTemplate(
     input_variables=["topic"],
