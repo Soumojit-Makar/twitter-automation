@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 from src.routes.twitter_routes import router as TwitterRoutes
 from contextlib import asynccontextmanager
 from src.db import create_table
@@ -23,5 +24,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
+@app.get("/", include_in_schema=False)
+async def root():
+    return RedirectResponse(url="/docs")
 app.include_router(TwitterRoutes)
