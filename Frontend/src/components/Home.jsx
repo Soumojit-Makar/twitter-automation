@@ -1,6 +1,6 @@
 import { createSignal, createResource, For, Show } from "solid-js";
 import axios from "axios";
-import toast, { Toaster } from "solid-toast"; 
+import toast, { Toaster } from "solid-toast";
 
 const BACKEND = import.meta.env.VITE_BACKEND_URL;
 
@@ -10,8 +10,12 @@ function Home() {
     const [darkMode, setDarkMode] = createSignal(false);
     const [loading, setLoading] = createSignal(false);
 
+    const [editId, setEditId] = createSignal(null);
+    const [editTopic, setEditTopic] = createSignal("");
+    const [editContent, setEditContent] = createSignal("");
+
     const fetchTweets = async () => {
-        const res = await axios.get(`${BACKEND}/tweets`);
+        const res = await axios.get(`${BACKEND}/tweet/tweets`);
         return res.data;
     };
 
@@ -21,12 +25,12 @@ function Home() {
         if (!topic()) return;
         try {
             setLoading(true);
-            await axios.post(`${BACKEND}/generate-tweet`, { topic: topic() });
-            toast.success("✅ Tweet generated!");
+            await axios.post(`${BACKEND}/tweet/generate-tweet`, { topic: topic() });
+            toast.success("Tweet generated!");
             setTopic("");
             refetch();
         } catch {
-            toast.error("❌ Failed to generate tweet.");
+            toast.error("Failed to generate tweet.");
         } finally {
             setLoading(false);
         }
@@ -34,11 +38,37 @@ function Home() {
 
     const postTweet = async (id) => {
         try {
-            await axios.post(`${BACKEND}/post-tweet/${id}`, {});
-            toast.success("✅ Tweet posted!");
+            await axios.post(`${BACKEND}/tweet/post-tweet/${id}`, {});
+            toast.success("Tweet posted!");
             refetch();
         } catch {
-            toast.error("❌ Failed to post tweet.");
+            toast.error("Failed to post tweet.");
+        }
+    };
+
+    const startEdit = (tweet) => {
+        setEditId(tweet.id);
+        setEditTopic(tweet.topic);
+        setEditContent(tweet.content);
+    };
+
+    const cancelEdit = () => {
+        setEditId(null);
+        setEditTopic("");
+        setEditContent("");
+    };
+
+    const saveEdit = async (id) => {
+        try {
+            await axios.put(`${BACKEND}/tweet/edit/${id}`, {
+                topic: editTopic(),
+                content: editContent(),
+            });
+            toast.success("Tweet updated!");
+            cancelEdit();
+            refetch();
+        } catch {
+            toast.error("Failed to update tweet.");
         }
     };
 
@@ -55,7 +85,7 @@ function Home() {
                     : "bg-gradient-to-b from-blue-50 to-white text-black min-h-screen transition"
             }
         >
-            <Toaster position="top-center" gutter={12}  />
+            <Toaster position="top-center" gutter={12} />
 
             <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 <div class="flex justify-between items-center mb-6">
@@ -79,13 +109,12 @@ function Home() {
                         onInput={(e) => setTopic(e.currentTarget.value)}
                         placeholder="💬 Enter a topic like 'React', 'AI', etc."
                         class="w-full p-3 mb-4 border border-gray-300 rounded-lg shadow-sm 
-         bg-white text-black 
-         dark:bg-gray-700 dark:text-white dark:border-gray-600 
-         placeholder:text-gray-500 dark:placeholder:text-gray-400 
-         focus:outline-none focus:ring-2 focus:ring-indigo-500
-         transition"
+              bg-white text-black 
+              dark:bg-gray-700 dark:text-white dark:border-gray-600 
+              placeholder:text-gray-500 dark:placeholder:text-gray-400 
+              focus:outline-none focus:ring-2 focus:ring-indigo-500
+              transition"
                     />
-
                     <button
                         onClick={generateTweet}
                         disabled={loading()}
@@ -108,20 +137,70 @@ function Home() {
                 <For each={filteredTweets()}>
                     {(tweet) => (
                         <div class="bg-white/80 dark:bg-gray-800/60 backdrop-blur-md p-5 rounded-xl shadow-md mb-4 hover:scale-[1.01] transition-all">
-                            <p class="text-lg text-black dark:text-white">{tweet.content}</p>
-                            <div class="text-sm text-gray-600 dark:text-gray-300 mt-2 italic">
-                                Topic: {tweet.topic}
-                            </div>
-                            <button
-                                onClick={() => postTweet(tweet.id)}
-                                disabled={tweet.posted}
-                                class={`mt-3 px-4 py-2 rounded text-white ${tweet.posted
-                                    ? "bg-gray-400 cursor-not-allowed"
-                                    : "bg-green-600 hover:bg-green-700"
-                                    } transition-all`}
+                            <Show
+                                when={editId() === tweet.id}
+                                fallback={
+                                    <>
+                                        <p class="text-lg text-black dark:text-white">
+                                            {tweet.content}
+                                        </p>
+                                        <div class="text-sm text-gray-600 dark:text-gray-300 mt-2 italic">
+                                            Topic: {tweet.topic}
+                                        </div>
+                                    </>
+                                }
                             >
-                                {tweet.posted ? "✅ Posted" : "🚀 Post to Twitter"}
-                            </button>
+                                <textarea
+                                    class="w-full p-2 rounded bg-gray-100 dark:bg-gray-700 dark:text-white mb-2"
+                                    value={editContent()}
+                                    onInput={(e) => setEditContent(e.currentTarget.value)}
+                                />
+                                <input
+                                    class="w-full p-2 rounded bg-gray-100 dark:bg-gray-700 dark:text-white mb-2"
+                                    value={editTopic()}
+                                    onInput={(e) => setEditTopic(e.currentTarget.value)}
+                                />
+                            </Show>
+
+                            <div class="mt-2 flex gap-3 flex-wrap">
+                                <button
+                                    onClick={() => postTweet(tweet.id)}
+                                    disabled={tweet.posted}
+                                    class={`px-4 py-2 rounded text-white ${tweet.posted
+                                            ? "bg-gray-400 cursor-not-allowed"
+                                            : "bg-green-600 hover:bg-green-700"
+                                        } transition-all`}
+                                >
+                                    {tweet.posted ? "✅ Posted" : "🚀 Post to Twitter"}
+                                </button>
+
+                                <Show
+                                    when={editId() === tweet.id}
+                                    fallback={
+                                        <Show when={!tweet.posted}>
+                                            <button
+                                                onClick={() => startEdit(tweet)}
+                                                class="px-4 py-2 rounded bg-yellow-500 text-white hover:bg-yellow-600 transition"
+                                            >
+                                                ✏️ Edit
+                                            </button>
+                                        </Show>
+                                    }
+                                >
+                                    <button
+                                        onClick={() => saveEdit(tweet.id)}
+                                        class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 transition"
+                                    >
+                                        💾 Save
+                                    </button>
+                                    <button
+                                        onClick={cancelEdit}
+                                        class="px-4 py-2 rounded bg-gray-500 text-white hover:bg-gray-600 transition"
+                                    >
+                                        ❌ Cancel
+                                    </button>
+                                </Show>
+                            </div>
                         </div>
                     )}
                 </For>

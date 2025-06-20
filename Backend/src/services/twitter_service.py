@@ -42,7 +42,8 @@ def update_tweet(id,topic,content,db):
 
     if not tweet:
         raise HTTPException(status_code=404, detail="Tweet not found.")
-
+    if tweet.posted:
+        raise HTTPException(status_code=400, detail="Tweet already posted and cannot be edited.")
     if topic is not None:
         tweet.topic = topic
 
