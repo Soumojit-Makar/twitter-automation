@@ -4,3 +4,7 @@ class PromptInput(BaseModel):
 
 class TweetContent(BaseModel):
     content: str
+
+class TweetUpdate(BaseModel):
+    topic: str | None = None
+    content: str | None = None
