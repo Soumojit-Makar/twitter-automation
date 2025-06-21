@@ -216,7 +216,7 @@ function Home() {
         setOffset(0);
         refetch();
       }}
-      class="w-full p-3 border rounded-lg  dark:border-gray-600 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+      class="w-full p-3 border rounded-lg  dark:border-gray-600 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all  placeholder:text-gray-400 dark:placeholder:text-gray-300 "
     >
       <option value="null">All</option>
       <option value="true">✅ Posted</option>
