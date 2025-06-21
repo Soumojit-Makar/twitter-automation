@@ -98,37 +98,37 @@ function Home() {
         refetch()
     };
     const startSpeechToText = () => {
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-  if (!SpeechRecognition) {
-    toast.error("Speech recognition is not supported in your browser.");
-    return;
-  }
+        if (!SpeechRecognition) {
+            toast.error("Speech recognition is not supported in your browser.");
+            return;
+        }
 
-  const recognition = new SpeechRecognition();
-  recognition.lang = "en-US";
-  recognition.interimResults = false;
-  recognition.maxAlternatives = 1;
+        const recognition = new SpeechRecognition();
+        recognition.lang = "en-US";
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
 
-  setListening(true);
-  recognition.start();
+        setListening(true);
+        recognition.start();
 
-  recognition.onresult = (event) => {
-    const speechResult = event.results[0][0].transcript;
-    setTopic(speechResult);
-    toast.success("🗣️ Captured speech input!");
-    setListening(false);
-  };
+        recognition.onresult = (event) => {
+            const speechResult = event.results[0][0].transcript;
+            setTopic(speechResult);
+            toast.success("🗣️ Captured speech input!");
+            setListening(false);
+        };
 
-  recognition.onerror = (event) => {
-    toast.error("Speech recognition error: " + event.error);
-    setListening(false);
-  };
+        recognition.onerror = (event) => {
+            toast.error("Speech recognition error: " + event.error);
+            setListening(false);
+        };
 
-  recognition.onend = () => {
-    setListening(false);
-  };
-};
+        recognition.onend = () => {
+            setListening(false);
+        };
+    };
 
 
     return (
@@ -183,47 +183,50 @@ function Home() {
 
 
                 <div class="mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-  {/* Search Input */}
-  <div>
-    <label for="search" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-      🔍 Search by Topic
-    </label>
-    <input
-      id="search"
-      value={search()}
-      onInput={(e) => {
-        setSearch(e.currentTarget.value);
-        setOffset(0);
-        refetch();
-      }}
-      class="w-full p-3 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all"
-      placeholder="Enter keyword like AI, React, etc."
-    />
-  </div>
+                    {/* Search Input */}
+                    <div>
+                        <label for="search" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            🔍 Search by Topic
+                        </label>
+                        <input
+                            id="search"
+                            value={search()}
+                            onInput={(e) => {
+                                setSearch(e.currentTarget.value);
+                                setOffset(0);
+                                refetch();
+                            }}
+                            class="w-full p-3 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+                            placeholder="Enter keyword like AI, React, etc."
+                        />
+                    </div>
 
-  {/* Filter by Post Status */}
-  <div>
-    <label for="filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-      🧵 Filter by Status
-    </label>
-    <select
-      id="filter"
-      onChange={(e) => {
-        const value = e.currentTarget.value;
-        if (value === "true") setPosted(true);
-        else if (value === "false") setPosted(false);
-        else setPosted(null);
-        setOffset(0);
-        refetch();
-      }}
-      class="w-full p-3 border rounded-lg  dark:border-gray-600 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all  placeholder:text-gray-400 dark:placeholder:text-gray-300 "
-    >
-      <option value="null">All</option>
-      <option value="true">✅ Posted</option>
-      <option value="false">🕓 Unposted</option>
-    </select>
-  </div>
-</div>
+                    {/* Filter by Post Status */}
+                    <div>
+                        <label for="filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            🧵 Filter by Status
+                        </label>
+                        <select
+                            id="filter"
+                            onChange={(e) => {
+                                const value = e.currentTarget.value;
+                                if (value === "true") setPosted(true);
+                                else if (value === "false") setPosted(false);
+                                else setPosted(null);
+                                setOffset(0);
+                                refetch();
+                            }}
+                            class="w-full p-3 border rounded-lg bg-white text-gray-900 dark:bg-gray-700 dark:text-white dark:border-gray-600 
+         focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all 
+         placeholder:text-gray-400 dark:placeholder:text-gray-300"
+                        >
+                            <option value="null">All</option>
+                            <option value="true">✅ Posted</option>
+                            <option value="false">🕓 Unposted</option>
+                        </select>
+
+                    </div>
+                </div>
 
 
                 <h2 class="text-2xl font-bold mb-4 text-blue-600 dark:text-blue-300">
