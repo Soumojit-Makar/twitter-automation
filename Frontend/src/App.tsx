@@ -10,8 +10,8 @@ function App() {
   const [editId, setEditId] = createSignal<string | null>(null);
   const [editTopic, setEditTopic] = createSignal("");
   const [editContent, setEditContent] = createSignal("");
-  const [limit] = createSignal(10);
-  const [offset, setOffset] = createSignal(0);
+  const [limit] = createSignal<number>(10);
+  const [offset, setOffset] = createSignal<number>(0);
   const [posted, setPosted] = createSignal<boolean | null>(null);
   const [listening, setListening] = createSignal(false);
 
@@ -80,7 +80,7 @@ function App() {
   };
 
   const nextPage = () => {
-    if (tweetList()?.items?.length >= limit()) {
+    if (tweetList()?.items?.length! >= limit()) {
       setOffset(offset() + limit());
     }
     refetch();
@@ -92,7 +92,7 @@ function App() {
   };
 
   const startSpeechToText = () => {
-    const SpeechRecognition = window.SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
       toast.error("Speech recognition not supported");
       return;
@@ -175,7 +175,9 @@ function App() {
           <select
             onChange={(e) => {
               const val = e.currentTarget.value;
-              setPosted(val === "all" ? null : val === "true");
+              if (val === "true") setPosted(true);
+              else if (val === "false") setPosted(false);
+              else setPosted(null);
               setOffset(0);
               refetch();
             }}
@@ -258,10 +260,10 @@ function App() {
             >
               Previous
             </button>
-            <span>Page {tweetList()?.current_page || 1}</span>
+            <span>Page {Math.floor(offset() / limit()) + 1}</span>
             <button
               onClick={nextPage}
-              disabled={tweetList()?.items?.length < limit()}
+              disabled={(tweetList()?.items?.length ?? 0) < limit()}
               class="px-4 py-2 bg-gray-400 text-white rounded disabled:opacity-50"
             >
               Next
@@ -269,7 +271,7 @@ function App() {
           </div>
         </Show>
 
-        <Show when={!tweetList.loading && tweetList()?.items?.length === 0}>
+        <Show when={!tweetList.loading && (tweetList()?.items?.length ?? 0) === 0}>
           <p class="text-center mt-6">No tweets found. Generate one!</p>
         </Show>
       </div>
