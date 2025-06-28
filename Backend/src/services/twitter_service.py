@@ -4,7 +4,7 @@ from src.config import TWITTER_API_KEY ,TWITTER_URL
 from src.schemas.schema import Tweet
 from fastapi import HTTPException
 from sqlmodel import select,desc
-from sqlalchemy import or_
+
 from sqlalchemy import func, or_
 from math import ceil
 def generate_tweet_service(topic,db):
@@ -60,12 +60,12 @@ def getAll(db,
         query = query.where(search_filter)
         count_query = count_query.where(search_filter)
 
-    total_items = db.exec(count_query).scalar()
+    total_items = db.exec(count_query).first()
     total_pages = ceil(total_items / limit) if limit > 0 else 1
     current_page = (offset // limit) + 1 if limit > 0 else 1
 
     query = query.order_by(Tweet.id.desc()).offset(offset).limit(limit)
-    tweets = db.exec(query).scalars().all()  
+    tweets = db.exec(query).all()  
 
 
     return {
