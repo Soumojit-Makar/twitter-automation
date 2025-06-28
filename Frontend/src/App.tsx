@@ -12,7 +12,7 @@ function App() {
     const [editTopic, setEditTopic] = createSignal("");
     const [editContent, setEditContent] = createSignal("");
 
-    const [limit] = createSignal(10);
+    const [limit] = createSignal(3);
     const [offset, setOffset] = createSignal(0);
     const [posted, setPosted] = createSignal<boolean|undefined>(undefined);
     const [listening, setListening] = createSignal<Boolean>(false);
