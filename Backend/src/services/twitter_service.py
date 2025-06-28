@@ -5,6 +5,8 @@ from src.schemas.schema import Tweet
 from fastapi import HTTPException
 from sqlmodel import select,desc
 from sqlalchemy import or_
+from sqlalchemy import func, or_
+from math import ceil
 def generate_tweet_service(topic,db):
     tweet =  generate_tweet(topic)
     tweet_entry= Tweet(content=tweet,topic=topic)
@@ -35,8 +37,7 @@ def post_twitter(id,db):
         return {"status": "posted", "tweet": tweet.content}
     else:
         raise HTTPException(status_code=response.status_code, detail=response.text)
-from sqlalchemy import select, func, or_
-from math import ceil
+
 
 def getAll(db,
            posted: bool | None = None,
@@ -44,16 +45,14 @@ def getAll(db,
            limit: int = 10,
            offset: int = 0):
 
-    # Base query
     query = select(Tweet)
     count_query = select(func.count()).select_from(Tweet)
 
-    # Apply filters
     if posted is not None:
         query = query.where(Tweet.posted == posted)
         count_query = count_query.where(Tweet.posted == posted)
 
-    if search:
+    if search is not None:
         search_filter = or_(
             Tweet.topic.ilike(f"%{search}%"),
             Tweet.content.ilike(f"%{search}%")
@@ -61,15 +60,12 @@ def getAll(db,
         query = query.where(search_filter)
         count_query = count_query.where(search_filter)
 
-    # Get total count
     total_items = db.exec(count_query).scalar()
     total_pages = ceil(total_items / limit) if limit > 0 else 1
     current_page = (offset // limit) + 1 if limit > 0 else 1
 
-    # Get paginated results
-    # Get paginated results
     query = query.order_by(Tweet.id.desc()).offset(offset).limit(limit)
-    tweets = db.exec(query).scalars().all()  # ✅ This is now correct
+    tweets = db.exec(query).scalars().all()  
 
 
     return {

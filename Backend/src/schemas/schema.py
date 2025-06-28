@@ -8,3 +8,4 @@ class Tweet(SQLModel, table=True):
     topic: str
     created_at: datetime = Field(default_factory=datetime.utcnow)
     posted: bool = False
+    

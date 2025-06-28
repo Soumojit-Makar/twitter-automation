@@ -20,10 +20,12 @@ async def edit_tweet(tweet_id: int, tweet: TweetUpdate,session:Session=Depends(g
         "tweet": result
     }
 @router.get("/tweets")
-def get_all_tweets(posted: bool | None = Query(None),
+def get_all_tweets(
+    posted: bool | None = Query(None),
     search: str | None = Query(None),
     limit: int = Query(10, ge=1),
-    offset: int = Query(0, ge=0),session: Session = Depends(get_db)):
+    offset: int = Query(0, ge=0),
+    session: Session = Depends(get_db)):
     result = getAll(session, posted, search, limit, offset)
     tweets_out = [
     TweetOut.from_orm(tweet[0]) if isinstance(tweet, (tuple, list)) else TweetOut.from_orm(tweet)
