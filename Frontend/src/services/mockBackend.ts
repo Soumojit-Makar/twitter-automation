@@ -1,4 +1,4 @@
-// Mock backend service to simulate API responses
+
 export interface Tweet {
   id: number;
   topic: string;
