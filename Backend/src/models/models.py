@@ -17,5 +17,5 @@ class TweetOut(BaseModel):
     content: str
     posted: bool
     created_at: datetime
-
+    image_path: str | None = None
     model_config = ConfigDict(from_attributes=True)
