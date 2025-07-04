@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, Query,HTTPException
-from fastapi.responses import StreamingResponse
+
 from sqlmodel import Session
 from src.models.models import PromptInput, TweetUpdate, TweetOut
 from src.db import get_db  

@@ -1,12 +1,11 @@
 import os
 import uuid
 import requests
-import torch
 from fastapi import HTTPException
 from src.config import GIMINI_API_KEY, HUGGINGFACE_TOKEN
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.prompts import PromptTemplate
-from datetime import datetime
+
 
 # Set environment for Gemini
 os.environ["GOOGLE_API_KEY"] = GIMINI_API_KEY
