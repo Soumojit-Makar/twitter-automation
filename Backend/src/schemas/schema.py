@@ -9,4 +9,4 @@ class Tweet(SQLModel, table=True):
     image_path: Optional[str] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
     posted: bool = False
-    
+   
