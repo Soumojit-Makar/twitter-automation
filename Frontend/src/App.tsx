@@ -420,12 +420,14 @@ function App() {
                                         </Show>
 
                                         <div class="flex gap-3 flex-wrap">
-                                            <button
+                                            { tweet.image_path && (
+                                                <button
                                                     onClick={() => mockBackend.deleteImage(tweet.id)}
                                                     class="text-red-500 hover:underline"
                                                 >
                                                     Delete Image
                                                 </button>
+                                                )}
                                                 
                                             <button
                                                 onClick={() => postTweet(tweet.id)}
@@ -454,19 +456,24 @@ function App() {
                                                             </svg>
                                                             Edit
                                                         </button>
-                                                        <button onClick={() =>{ 
+                                                        {tweet.image_path && (
+                            <button onClick={() =>{ 
                                                             mockBackend.imageGenerate(tweet.id) ;
                                                             refetch();
-                                                        }}>
+
+                                                        }}
+                                                        class="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl hover:shadow-blue-500/30"
+                                                        disabled={tweet.image_path !== null}
+                                                        >
                                                             Generate Image
                                                             <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                                                             </svg>
                                                         </button>
-                                                    
-                                                    </Show>
-                                                }
-                                            >
+                                                    )}
+                                                </Show>
+                                            }
+                                        >
                                                 <button
                                                     onClick={() => saveEdit(tweet.id)}
                                                     class="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl hover:shadow-blue-500/30"
