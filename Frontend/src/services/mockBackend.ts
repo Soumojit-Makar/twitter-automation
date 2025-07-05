@@ -5,6 +5,7 @@ export interface Tweet {
   content: string;
   posted: boolean;
   created_at: string;
+  image_path: string | null;
 }
 
 export interface TweetListResponse {
@@ -51,6 +52,17 @@ class MockBackendService {
     const res = await axios.put(`${BACKEND}/tweet/edit/${tweet_id}`, updates);
     return res.data;
   }
+  async imageGenerate(
+    tweet_id: number
+  ): Promise<string> {
+    const res = await axios.post(`${BACKEND}/tweet/image-generate/${tweet_id}`);
+    return res.data;
+  }
+  getImage(tweet_id: number): string {
+    return `${BACKEND}/tweet/image/${tweet_id}`;
+  }
+  async deleteImage(tweet_id: number): Promise<void> {
+    await axios.delete(`${BACKEND}/tweet/image/${tweet_id}`);
+  }
 }
-
 export const mockBackend = new MockBackendService();
