@@ -378,7 +378,7 @@ function App() {
                                             fallback={
                                                 <>
                                                     <p class="text-lg leading-relaxed text-gray-800 dark:text-white mb-4 font-medium">{tweet.content}</p>
-                                                    <img src={mockBackend.getImage(tweet.id)} alt={tweet.topic} title={tweet.topic}  class="w-full max-h-96 object-cover rounded-xl shadow-md mb-4 transition-transform duration-300 hover:scale-105"  />
+                                                    <img src={mockBackend.getImage(tweet.id)} alt={tweet.topic} title={tweet.topic}  class=" max-h-96 align-middle rounded-xl shadow-md mb-4 transition-transform duration-300 hover:scale-105"  />
                                                     <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-6">
                                                         <div class="flex items-center gap-2 px-3 py-1 bg-purple-100 dark:bg-purple-900/30 rounded-full">
                                                             <svg class="w-4 h-4 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
